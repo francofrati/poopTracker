@@ -1,3 +1,4 @@
+import { popUpSignIn } from '@/lib/firebase/auth'
 import { Space_Grotesk } from '@next/font/google'
 
 import { BsGoogle } from 'react-icons/bs'
@@ -25,6 +26,7 @@ const Login = () => {
                 className="flex flex-col gap-10 w-[85%] mx-auto text-white"
             >
                 <button
+                onClick={popUpSignIn}
                     className="bg-red-400 flex justify-start gap-2 rounded overflow-hidden h-[60px]"
                 >
                     <span
