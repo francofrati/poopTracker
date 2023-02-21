@@ -1,33 +1,45 @@
 import { signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
 import { auth } from "@/config/firebase";
+import { getData, writeData } from "./database";
 
 
 const provider = new GoogleAuthProvider();
 
-export const popUpSignIn =() => {
+export const popUpSignIn = () => {
     return signInWithPopup(auth, provider)
         .then((result) => {
             // This gives you a Google Access Token. You can use it to access the Google API.
             const credential = GoogleAuthProvider.credentialFromResult(result);
-            //@ts-expect-error
-            const token = credential.accessToken;
+
+
+            const token = credential?.accessToken;
             // The signed-in user info.
             const user = result.user;
+
+            const registerUserInDb = async () => {
+                const userExists = await getData('users/' + user.uid)
+                if (!userExists) {
+                    writeData('users/' + user.uid, {
+                        email: user.email
+                    })
+                }
+            }
+            registerUserInDb()
             // IdP data available using getAdditionalUserInfo(result)
-            console.log(user)
             // ...
         }).catch((error) => {
             // Handle Errors here.
-            const errorCode = error.code;
-            const errorMessage = error.message;
+            console.log(error)
+            // const errorCode = error.code;
+            // const errorMessage = error.message;
             // The email of the user's account used.
-            const email = error.customData.email;
+            // const email = error.customData.email;
             // The AuthCredential type that was used.
-            const credential = GoogleAuthProvider.credentialFromError(error);
+            // const credential = GoogleAuthProvider.credentialFromError(error);
             // ...
         });
 }
 
-export const logOut = ()=>{
+export const logOut = () => {
     return signOut(auth)
 }

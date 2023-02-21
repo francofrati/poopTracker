@@ -26,7 +26,7 @@ export default function App({ Component, pageProps }: AppProps) {
           ? <button
             onClick={logOut}
             className='p-2 bg-white text-blue-200 rounded shadow-sm'
-            >
+          >
             Log Out
           </button>
           : <></>
