@@ -24,6 +24,17 @@ export const getData = async (path: string) => {
 
 }
 
-export const writeData = (path: string, data: any) => {
-    set(ref(db, path), data);
+export const writeData = async (path: string, data: any) => {
+    try {
+        await set(ref(db, path), data);
+        return {
+            success: true
+        }
+    } catch (error) {
+        return {
+            success: false,
+            error: error
+        }
+    }
+
 }

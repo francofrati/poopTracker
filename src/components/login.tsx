@@ -1,6 +1,8 @@
+import { useAuth } from '@/hooks/useAuth'
 import { popUpSignIn } from '@/lib/firebase/auth'
 import { getData } from '@/lib/firebase/database'
 import { Space_Grotesk } from '@next/font/google'
+import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 
 import { BsGoogle } from 'react-icons/bs'
@@ -15,6 +17,10 @@ const Login = () => {
 
     const [totalUsers, setTotalUsers] = useState<number>(0)
 
+    const { user } = useAuth()
+
+    const router = useRouter()
+
     useEffect(() => {
         const getTotalUsers = async () => {
             const users: any = await getData('/users')
@@ -27,6 +33,10 @@ const Login = () => {
         getTotalUsers()
 
     }, [])
+
+    useEffect(() => {
+        if (user) router.push('/home')
+    }, [user])
 
     return (
         <div
