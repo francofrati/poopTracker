@@ -1,9 +1,11 @@
 import { Space_Grotesk } from '@next/font/google'
-import { IoMdAddCircle } from 'react-icons/io'
 import React, { useState, useEffect } from 'react'
 import { getData } from '@/lib/firebase/database'
 import { useAuth } from '@/hooks/useAuth'
 import { addPoop } from '@/lib/firebase/poops'
+import { getCurrentMonth, getDayOfMonth } from '@/utils/dates'
+import { onValue, ref } from 'firebase/database'
+import { db } from '@/config/firebase'
 
 const font = Space_Grotesk({
     weight: '400',
@@ -13,30 +15,77 @@ const font = Space_Grotesk({
 const Home = () => {
 
     const [poopStats, setPoopStats] = useState<any[]>([])
+    const [currentUser, setCurrentUser] = useState<any>()
+    const [poops,setPoops] = useState<number|string|any>(0)
 
+    
     const { user } = useAuth()
+    
+    // onValue(ref(db,'users/'+user?.uid+'/poops'),(snapshot)=>{
+    //     console.log(snapshot.val(),'soy un observer')
+    // })
 
-    useEffect(() => {
-        const getPoopData = async () => {
-            const data = await getData('users')
-            if (data) {
-                // console.log(data)
-                const formattedData = Object.entries(data).map((e: any) => e[1])
-                console.log(formattedData)
-                setPoopStats([...formattedData])
-            }
+    const getMonthPoops = () => {
+        let total = 0
+        if (currentUser && currentUser.poop_log) {
+            const poopLog = JSON.parse(currentUser.poop_log)
+
+
+            poopLog.forEach((p: any) => {
+                const currentMonth = getCurrentMonth(new Date(p.timestamp))
+
+                if (currentMonth) total = total + 1
+
+            })
+
         }
-        getPoopData()
-    }, [])
+        return total
+    }
 
+    const getDayPoops = () => {
+        let total = 0
+        if (currentUser && currentUser.poop_log) {
+            const poopLog = JSON.parse(currentUser.poop_log)
+            poopLog.forEach((p: any) => {
+                const currentDay = getDayOfMonth(new Date(p.timestamp))
 
+                if (currentDay) total = total + 1
+
+            })
+        }
+        return total
+    }
+
+    const getUser = async () => {
+        const poopUser = await getData(`users/${user?.uid}`)
+
+        if (poopUser) {
+            setCurrentUser(poopUser)
+        }
+    }
+    const getPoopData = async () => {
+        const data = await getData('users')
+        if (data) {
+            // console.log(data)
+            const formattedData = Object.entries(data).map((e: any) => e[1])
+            console.log(formattedData)
+            setPoopStats([...formattedData])
+        }
+    }
+    useEffect(() => {
+
+        Promise.all([
+            getPoopData(),
+            getUser()
+        ])
+    }, [user])
 
     return (
         <div
             className='w-full flex flex-col items-center gap-6'
         >
             <section
-                className='bg-[#D9D9D9] w-[90%] rounded-[10px] p-2 flex flex-col gap-2'
+                className='bg-[#D9D9D9] w-[90%] rounded-[10px] p-2 flex flex-col gap-2 global_table_shadow'
             >
                 <section
                     className='w-full  h-full flex flex-col'
@@ -73,12 +122,17 @@ const Home = () => {
                                 <strong
                                     className='text-[#704506]'
                                 >
-                                    100💩
+                                    {
+                                        currentUser && currentUser.poop_log
+                                            ? getDayPoops()
+                                            : '-'
+                                    }
+                                    💩
                                 </strong>
 
                             </p>
                         </span>
-                        <span
+                        {/* <span
                             className='flex gap-1 items-center'
                         >
                             <p
@@ -92,7 +146,7 @@ const Home = () => {
                                 </strong>
 
                             </p>
-                        </span>
+                        </span> */}
                         <span
                             className='flex gap-1 items-center'
                         >
@@ -103,7 +157,11 @@ const Home = () => {
                                 <strong
                                     className='text-[#704506]'
                                 >
-                                    100💩
+                                    {
+                                        currentUser && currentUser.poop_log
+                                            ? getMonthPoops()
+                                            : '-'
+                                    }💩
                                 </strong>
 
                             </p>
@@ -119,7 +177,13 @@ const Home = () => {
                                 <strong
                                     className='text-[#704506]'
                                 >
-                                    100💩
+                                    {
+                                        currentUser && currentUser.poops
+                                            ? currentUser.poops
+                                            : '-'
+                                    }
+                                    {/* {poops} */}
+                                    💩
                                 </strong>
 
                             </p>
@@ -127,26 +191,28 @@ const Home = () => {
                     </section>
                     <section
                         className='w-full grid place-content-center'
-                    >                        
-                        <img 
-                        onClick={async () => {
-                            if (user) {
+                    >
+                        <img
+                            onClick={async () => {
+                                if (user) {
 
-                                const poopUser = await getData(`users/${user.uid}`)
-
-                                if (poopUser) {
-                                    const addPoopReq = await addPoop(poopUser, user.uid)
-                                    if (addPoopReq.success) {
-                                        alert(addPoopReq.msg)
-                                    } else {
-                                        alert('ERROROROROR')
+                                    const poopUser = await getData(`users/${user.uid}`)
+                                    console.log(poopUser)
+                                    if (poopUser) {
+                                        const addPoopReq = await addPoop(poopUser, user.uid)
+                                        if (addPoopReq.success) {
+                                            alert(addPoopReq.msg)
+                                            getPoopData()
+                                            getUser()
+                                        } else {
+                                            alert('ERROROROROR')
+                                        }
                                     }
                                 }
-                            }
 
-                        }}
-                        className='w-[100px] animate-grow'
-                        src="https://static.vecteezy.com/system/resources/previews/001/202/843/non_2x/poo-emoji-png.png" 
+                            }}
+                            className='w-[100px] animate-grow cursor-pointer'
+                            src="https://static.vecteezy.com/system/resources/previews/001/202/843/non_2x/poo-emoji-png.png"
                         />
                     </section>
                 </section>
