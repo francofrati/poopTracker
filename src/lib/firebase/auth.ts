@@ -20,7 +20,10 @@ export const popUpSignIn = () => {
                 const userExists = await getData('users/' + user.uid)
                 if (!userExists) {
                     writeData('users/' + user.uid, {
-                        email: user.email
+                        email: user.email,
+                        poops: 0,
+                        exp: 0,
+                        poop_log: JSON.stringify([])
                     })
                 }
             }

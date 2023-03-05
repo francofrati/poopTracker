@@ -23,12 +23,13 @@ body {
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
   border-top-right-radius: 10px;
-  border-top-left-radius: 10px;
+  border-top-left-radius: 10px;  
 }
 
 .global_table>thead>tr>th {
   /* border: 1px solid white; */
   text-align: center;
+  height: 20px;
   font-size: 16px;
   padding-top: 10px;
   padding-bottom: 10px;
@@ -156,3 +157,38 @@ border-bottom: #C6C6C6 1px solid;
 .animate-grow {
   animation: grow 1s infinite;
 }
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.example::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.example {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* 
+Loader
+*/
+
+.loader_sm {
+  width: 35px;
+  height: 35px;
+  border: 3px solid #704506;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;  
+  }
+
+  @keyframes rotation {
+  0% {
+      transform: rotate(0deg);
+  }
+  100% {
+      transform: rotate(360deg);
+  }
+  } 
