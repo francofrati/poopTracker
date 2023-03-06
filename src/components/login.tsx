@@ -16,6 +16,7 @@ const font = Space_Grotesk({
 const Login = () => {
 
     const [totalUsers, setTotalUsers] = useState<number>(0)
+    const [loader, setLoader] = useState<boolean>(false)
 
     const { user } = useAuth()
 
@@ -64,8 +65,16 @@ const Login = () => {
                 className="flex flex-col gap-10 w-[85%] mx-auto text-white"
             >
                 <button
-                    onClick={popUpSignIn}
-                    className="bg-red-400 flex justify-start rounded overflow-hidden h-[60px]"
+                    disabled={loader}
+                    onClick={() => {
+                        setLoader(true)
+                        popUpSignIn()
+                            .then(() => {
+                                setLoader(false)
+                            })
+
+                    }}
+                    className={`${loader?'opacity-70':''} bg-red-400 flex justify-start rounded overflow-hidden h-[60px]`}
                 >
                     <span
                         className='bg-red-500 p-3 grid place-content-center h-full'
@@ -75,11 +84,14 @@ const Login = () => {
                             size={30}
                         />
                     </span>
-                    <h6
+                    {
+                        loader
+                        ?<div className='h-full w-full grid place-content-center'><span className='loader_white_sm'></span></div>
+                        :<h6
                         className='grid place-content-center h-full text-[16px]  mx-auto font-bold text-center'
                     >
                         Iniciar Sesion con Google
-                    </h6>
+                    </h6>}
                 </button>
                 {/* <button
                     className="bg-blue-500 flex justify-start gap-2 rounded overflow-hidden h-[60px]"
@@ -102,7 +114,7 @@ const Login = () => {
             <section
                 className='flex justify-center text-white items-center gap-2'
             >
-                {totalUsers}
+                {totalUsers===0?'':totalUsers}
                 <section
                     className='relative flex flex-col items-center'
                 >
