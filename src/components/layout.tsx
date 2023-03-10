@@ -21,6 +21,15 @@ const Layout: FC<LayoutProps> = ({ children, user }) => {
             <main>
                 {children}
             </main>
+            <footer
+                className='absolute bottom-1 left-2'
+            >
+                <p
+                    className='text-white text-[10px] text-center'
+                >
+                    Version: Beta 0.0.1
+                </p>
+            </footer>
         </div>
     )
 }

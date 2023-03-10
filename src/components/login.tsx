@@ -16,20 +16,22 @@ const font = Space_Grotesk({
 const Login = () => {
 
     const [totalUsers, setTotalUsers] = useState<number>(0)
+    const [loadingTotalUsers, setLoadingTotalUsers] = useState<boolean>(true)
     const [loader, setLoader] = useState<boolean>(false)
 
-    const { user } = useAuth()
+    const { user, userLoading } = useAuth()
 
     const router = useRouter()
 
     useEffect(() => {
         const getTotalUsers = async () => {
             const users: any = await getData('/users')
-            console.log(users)
+            // console.log(users)
             if (users) {
                 setTotalUsers(Object.entries(users).length)
             }
             // return users
+            setLoadingTotalUsers(false)
         }
         getTotalUsers()
 
@@ -38,7 +40,10 @@ const Login = () => {
     useEffect(() => {
         if (user) router.push('/home')
     }, [user])
-
+    if (userLoading) {
+        return <>
+        </>
+    }
     return (
         <div
             className={`w-full md:w-3/4 md:max-w-[600px] md:mx-auto flex flex-col py-[60px] gap-4 ${font.className}`}
@@ -74,7 +79,7 @@ const Login = () => {
                             })
 
                     }}
-                    className={`${loader?'opacity-70':''} bg-red-400 flex justify-start rounded overflow-hidden h-[60px]`}
+                    className={`${loader ? 'opacity-70' : ''} bg-red-400 flex justify-start rounded overflow-hidden h-[60px]`}
                 >
                     <span
                         className='bg-red-500 p-3 grid place-content-center h-full'
@@ -86,12 +91,12 @@ const Login = () => {
                     </span>
                     {
                         loader
-                        ?<div className='h-full w-full grid place-content-center'><span className='loader_white_sm'></span></div>
-                        :<h6
-                        className='grid place-content-center h-full text-[16px]  mx-auto font-bold text-center'
-                    >
-                        Iniciar Sesion con Google
-                    </h6>}
+                            ? <div className='h-full w-full grid place-content-center'><span className='loader_white_sm'></span></div>
+                            : <h6
+                                className='grid place-content-center h-full text-[16px]  mx-auto font-bold text-center'
+                            >
+                                Iniciar Sesion con Google
+                            </h6>}
                 </button>
                 {/* <button
                     className="bg-blue-500 flex justify-start gap-2 rounded overflow-hidden h-[60px]"
@@ -112,9 +117,14 @@ const Login = () => {
                 </button> */}
             </section>
             <section
-                className='flex justify-center text-white items-center gap-2'
+                className='flex justify-center text-white items-center gap-2 h-[20px]'
             >
-                {totalUsers===0?'':totalUsers}
+                {
+                    // totalUsers === 0 ? '' : totalUsers
+                    loadingTotalUsers
+                        ? <span className='loader_white_mini'></span>
+                        : totalUsers
+                }
                 <section
                     className='relative flex flex-col items-center'
                 >
@@ -127,7 +137,7 @@ const Login = () => {
                     />
                 </section>
             </section>
-            <footer
+            {/* <footer
                 className='absolute bottom-1 left-2'
             >
                 <p
@@ -135,7 +145,7 @@ const Login = () => {
                 >
                     Version: Beta 0.0.1
                 </p>
-            </footer>
+            </footer> */}
         </div>
     )
 }

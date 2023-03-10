@@ -24,7 +24,7 @@ export const useAuth = () => {
             }
         );
 
-        console.log(user)
+        // console.log(user)
 
         return () => {
             listener()

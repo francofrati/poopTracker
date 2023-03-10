@@ -69,7 +69,7 @@ const Home = () => {
 
         if (poopUser) {
             setCurrentUser(poopUser)
-            console.log(getLevel(poopUser.exp))
+            // console.log(getLevel(poopUser.exp))
         } else if (!poopUser && user) {
             getUser()
         }
@@ -80,7 +80,7 @@ const Home = () => {
         if (data) {
             // console.log(data)
             const formattedData = Object.entries(data).map((e: any) => e[1])
-            console.log(formattedData)
+            // console.log(formattedData)
             setPoopStats([...formattedData])
         }
     }
@@ -116,7 +116,10 @@ const Home = () => {
                                     className='flex items-center gap-2'
                                 >
                                     <span
-                                        className='border-[2px] border-[#704506] rounded-[999px] p-1 text-[#D9D9D9] bg-[#434343] w-[35px] h-[35px] text-xl grid place-content-center'
+                                        className='border-[2px] pb-[2px] border-[#704506] rounded-[999px] text-[#D9D9D9] bg-[#434343] w-[35px] h-[35px] text-xl grid place-content-center'
+                                        onClick={()=>{
+                                            alert('Este es tu nivel de experiencia, segui cagando para subir de nivel')
+                                        }}
                                     >
                                         {getLevel(currentUser.exp)?.level}
                                     </span>
@@ -126,7 +129,7 @@ const Home = () => {
                                         {
                                             currentUser.username ? currentUser.username : currentUser.email?.split('@')[0]
                                         }
-                                        <strong className='font-snormal text-[10px] font-bold text-[#5C5C5C]'>{getLevel(currentUser.exp)?.name}</strong>
+                                        <strong className='font-snormal text-[10px] font-bold text-[#5C5C5C]'>{' '+getLevel(currentUser.exp)?.name}</strong>
                                     </span>
                                 </section>
                             </section>
@@ -206,7 +209,7 @@ const Home = () => {
                                                 {
                                                     currentUser && currentUser.poops
                                                         ? ' ' + currentUser.poops
-                                                        : '-'
+                                                        : ' 0'
                                                 }
                                                 💩
                                             </strong>
@@ -223,7 +226,7 @@ const Home = () => {
                                             if (user) {
 
                                                 const poopUser = await getData(`users/${user.uid}`)
-                                                console.log(poopUser)
+                                                // console.log(poopUser)
                                                 if (poopUser) {
                                                     const log = JSON.parse(poopUser.poop_log).map((p: { timestamp: string }) => new Date(p.timestamp)).sort((a: any, b: any) => a - b)
                                                     if(log.length){
@@ -299,10 +302,10 @@ const Home = () => {
                                         // console.log(u,'sssss')
                                         return u[1].username ? u[1].username : ''
                                     })
-                                    console.log(formattedUsers)
+                                    // console.log(formattedUsers)
 
                                     const isNameAvailable = !formattedUsers.includes(value.trim())
-                                    console.log(isNameAvailable)
+                                    // console.log(isNameAvailable)
 
                                     if (isNameAvailable) {
                                         const setUsernameReq = await writeData('users/' + user?.uid + '/username', value.trim())
@@ -318,7 +321,7 @@ const Home = () => {
                                     }
 
                                 }
-                                console.log(value)
+                                // console.log(value)
                             }}
                         >
                             <input
@@ -351,7 +354,7 @@ const Home = () => {
                 className={'w-[90%] flex'}
             >
                 <div
-                    className='w-full max-w-[600px] max-h-[350px] example overflow-y-scroll m-auto global_table_shadow rounded-[10px]'
+                    className='w-full  max-w-[600px] max-h-[350px] example overflow-y-scroll m-auto global_table_shadow rounded-[10px]'
                 >
                     <table
                         className={`global_table ${font.className} `}
@@ -393,7 +396,7 @@ const Home = () => {
                                             <td
                                                 className='text-[5C5C5C]'
                                             >
-                                                23
+                                                {getLevel(u.exp)?.level}
                                             </td>
                                             <td
                                                 className=''

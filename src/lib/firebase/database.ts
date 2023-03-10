@@ -9,11 +9,11 @@ export const getData = async (path: string) => {
         const snapshot = await get(child(dbRef(), path))
 
         if (snapshot.exists()) {
-            console.log(snapshot.val());
+            // console.log(snapshot.val());
             // value = snapshot.val()
             return snapshot.val()
         } else {
-            console.log("No data available");
+            // console.log("No data available");
         }
 
     } catch (error) {
